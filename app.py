@@ -23,6 +23,7 @@ CONFIG_DIR = "config/clients"
 
 st.set_page_config(
     page_title="Caption Writer",
+    page_icon="✦",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={"Get Help": None, "Report a bug": None, "About": None},
@@ -30,55 +31,236 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-#MainMenu, footer, header { visibility: hidden; }
-.block-container { padding-top: 1.5rem; padding-bottom: 2rem; max-width: 1200px; }
+/* ── Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* ── Base ── */
+html, body, [class*="css"], .stApp {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #080808;
+}
+#MainMenu, footer, header { visibility: hidden; }
+.block-container { padding-top: 2rem; padding-bottom: 3rem; max-width: 1240px; }
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
+hr { border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 1.5rem 0; }
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background: #0c0c0c !important;
+    border-right: 1px solid rgba(181,126,220,0.12);
+}
+[data-testid="stSidebar"] section { padding-top: 1.5rem; }
+
+/* Lavender glow on focused sidebar select */
+[data-testid="stSidebar"] [data-baseweb="select"] > div:focus-within,
+[data-testid="stSidebar"] [data-baseweb="select"] > div:hover {
+    border-color: rgba(181,126,220,0.5) !important;
+    box-shadow: 0 0 0 3px rgba(181,126,220,0.12), 0 0 20px rgba(181,126,220,0.08);
+}
+
+/* ── Tabs ── */
+.stTabs [data-baseweb="tab-list"] {
+    background: transparent;
+    gap: 2px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 0;
+}
+.stTabs [data-baseweb="tab"] {
+    background: transparent !important;
+    border-radius: 10px 10px 0 0;
+    color: #555;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 0.6rem 1.4rem;
+    transition: color 0.2s;
+    border: none !important;
+}
+.stTabs [data-baseweb="tab"]:hover { color: #aaa; }
+.stTabs [aria-selected="true"] {
+    background: rgba(181,126,220,0.07) !important;
+    color: #B57EDC !important;
+    border-bottom: 2px solid #B57EDC !important;
+}
+
+/* ── Primary buttons ── */
+.stButton > button {
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    transition: all 0.2s ease;
+    padding: 0.5rem 1.4rem;
+}
+.stButton > button[kind="primary"] {
+    background: #B57EDC;
+    border: 1px solid #B57EDC;
+    color: #080808;
+    font-weight: 600;
+}
+.stButton > button[kind="primary"]:hover {
+    background: #c990f0;
+    border-color: #c990f0;
+    box-shadow: 0 0 28px rgba(181,126,220,0.4);
+    transform: translateY(-1px);
+}
+.stButton > button[kind="secondary"],
+.stButton > button:not([kind]) {
+    background: rgba(181,126,220,0.07);
+    border: 1px solid rgba(181,126,220,0.2);
+    color: #B57EDC;
+}
+.stButton > button[kind="secondary"]:hover,
+.stButton > button:not([kind]):hover {
+    background: rgba(181,126,220,0.15);
+    border-color: #B57EDC;
+    box-shadow: 0 0 18px rgba(181,126,220,0.2);
+    transform: translateY(-1px);
+    color: #d0a0f8;
+}
+
+/* ── Inputs & textareas ── */
+.stTextInput > div > div > input,
+.stTextArea > div > div > textarea,
+.stSelectbox [data-baseweb="select"] > div {
+    background: rgba(255,255,255,0.025) !important;
+    border: 1px solid rgba(255,255,255,0.07) !important;
+    border-radius: 12px !important;
+    color: #e0e0e0 !important;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.stTextInput > div > div > input:focus,
+.stTextArea > div > div > textarea:focus {
+    border-color: rgba(181,126,220,0.45) !important;
+    box-shadow: 0 0 0 3px rgba(181,126,220,0.08) !important;
+}
+
+/* ── Slider ── */
+[data-testid="stSlider"] [role="slider"] {
+    background: #B57EDC !important;
+    border-color: #B57EDC !important;
+    box-shadow: 0 0 10px rgba(181,126,220,0.4) !important;
+}
+[data-testid="stSlider"] [data-testid="stSliderTrackFill"] {
+    background: #B57EDC !important;
+}
+
+/* ── File uploader ── */
+[data-testid="stFileUploader"] > div {
+    background: rgba(181,126,220,0.025);
+    border: 1.5px dashed rgba(181,126,220,0.2) !important;
+    border-radius: 18px !important;
+    transition: all 0.25s ease;
+    padding: 1.5rem !important;
+}
+[data-testid="stFileUploader"] > div:hover {
+    background: rgba(181,126,220,0.055) !important;
+    border-color: rgba(181,126,220,0.45) !important;
+    box-shadow: 0 0 30px rgba(181,126,220,0.07);
+}
+
+/* ── Expanders ── */
+[data-testid="stExpander"] {
+    background: rgba(255,255,255,0.015) !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+    border-radius: 14px !important;
+}
+[data-testid="stExpander"] summary:hover {
+    color: #B57EDC !important;
+}
+
+/* ── Forms ── */
+[data-testid="stForm"] {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.045);
+    border-radius: 20px;
+    padding: 2rem 2rem 1.5rem;
+}
+
+/* ── Image previews ── */
+[data-testid="stImage"] img {
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Status widget ── */
+[data-testid="stStatusWidget"] {
+    background: rgba(181,126,220,0.05) !important;
+    border: 1px solid rgba(181,126,220,0.15) !important;
+    border-radius: 14px !important;
+}
+
+/* ── Checkbox ── */
+[data-testid="stCheckbox"] label span {
+    border-color: rgba(181,126,220,0.3) !important;
+    border-radius: 5px;
+}
+[data-testid="stCheckbox"] input:checked + div {
+    background: #B57EDC !important;
+    border-color: #B57EDC !important;
+}
+
+/* ── Radio ── */
+[data-testid="stRadio"] label:has(input:checked) {
+    color: #B57EDC !important;
+}
+
+/* ── Caption cards (glassmorphism) ── */
 .caption-card {
-    background: #141414;
-    border: 1px solid #1e1e1e;
-    border-radius: 8px;
-    padding: 1.5rem;
-    min-height: 320px;
+    background: rgba(181,126,220,0.04);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(181,126,220,0.12);
+    border-radius: 18px;
+    padding: 1.6rem;
+    min-height: 340px;
     display: flex;
     flex-direction: column;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+.caption-card:hover {
+    border-color: rgba(181,126,220,0.28);
+    box-shadow: 0 8px 40px rgba(181,126,220,0.08);
 }
 .cc-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
     font-weight: 700;
     text-transform: uppercase;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #222;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     margin-bottom: 1rem;
 }
-.cc-energy  { color: #ff7043; }
-.cc-minimal { color: #90a4ae; }
-.cc-engage  { color: #42a5f5; }
+.cc-energy  { color: #f4845f; }
+.cc-minimal { color: #8fafc0; }
+.cc-engage  { color: #B57EDC; }
 .cc-text {
     font-size: 0.9rem;
-    line-height: 1.8;
-    color: #d8d8d8;
+    line-height: 1.85;
+    color: #ddd;
     white-space: pre-wrap;
     flex: 1;
 }
 .cc-rationale {
     font-size: 0.72rem;
-    color: #505050;
+    color: rgba(181,126,220,0.5);
     font-style: italic;
-    padding-top: 0.75rem;
-    border-top: 1px solid #1a1a1a;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
     margin-top: 1rem;
 }
+
+/* ── Profile pill (sidebar) ── */
 .profile-pill {
-    background: #111;
-    border: 1px solid #1e1e1e;
-    border-radius: 6px;
-    padding: 0.85rem 1rem;
-    margin-top: 0.4rem;
+    background: rgba(181,126,220,0.04);
+    border: 1px solid rgba(181,126,220,0.12);
+    border-radius: 15px;
+    padding: 1rem 1.1rem;
+    margin-top: 0.5rem;
 }
-.pp-name   { font-weight: 600; font-size: 0.9rem; color: #e0e0e0; }
-.pp-handle { color: #c4a55a; font-size: 0.78rem; margin: 3px 0 7px; }
-.pp-meta   { color: #555; font-size: 0.72rem; line-height: 1.65; }
+.pp-name   { font-weight: 600; font-size: 0.9rem; color: #ebebeb; }
+.pp-handle { color: #B57EDC; font-size: 0.78rem; margin: 4px 0 8px; }
+.pp-meta   { color: #555; font-size: 0.72rem; line-height: 1.7; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -172,7 +354,7 @@ with st.sidebar:
         st.markdown(f"""
 <div class="profile-pill">
   <div class="pp-name">{html.escape(p.get('name', selected))}</div>
-  <div class="pp-handle">{html.escape(p.get('handle', ''))}</div>
+  <div class="pp-handle" style="color:#B57EDC">{html.escape(p.get('handle', ''))}</div>
   <div class="pp-meta">
     {html.escape(p.get('platform','Instagram'))} &nbsp;·&nbsp;
     {html.escape(p.get('caption_length','—'))}<br>
