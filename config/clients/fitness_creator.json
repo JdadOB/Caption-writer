@@ -1,0 +1,36 @@
+{
+  "name": "Alex Rivera",
+  "handle": "@alexrivera_fit",
+  "tone": "high-energy, raw, motivational, no-nonsense",
+  "target_audience": "fitness enthusiasts aged 18-35 who want real results, no fluff",
+  "platform": "Instagram",
+  "caption_length": "short to medium (40-120 words)",
+  "hashtag_style": "4-6 fitness and lifestyle hashtags, lowercase preferred",
+  "emoji_preferences": {
+    "use_emojis": true,
+    "preferred": ["🔥", "💪", "⚡", "🏋️"],
+    "avoid": ["❤️", "😊", "✨"]
+  },
+  "banned_words": [
+    "amazing", "awesome", "incredible", "journey", "transformation",
+    "blessed", "grateful", "obsessed", "literally", "honestly", "vibe"
+  ],
+  "best_past_content": [
+    {
+      "caption": "5am. Dark outside. Every excuse in the book to stay in bed.\n\nI chose the gym instead.\n\nNot because it was easy. Because easy doesn't build anything worth having. 💪\n\nYour discipline is your edge. Use it.\n\n#FitnessLife #EarlyMorning #NoExcuses #GymMotivation #TrainHard",
+      "context": "Early morning workout reel",
+      "performance": "high engagement"
+    },
+    {
+      "caption": "The rep nobody sees is the one that matters most.\n\nIn the quiet. With zero likes on the line. That's where real strength is built. ⚡\n\n#TrainHard #MindsetMatters #IronMind #Discipline",
+      "context": "Solo training session",
+      "performance": "viral"
+    },
+    {
+      "caption": "Six months of work in 60 seconds.\n\nEvery missed sleep. Every skipped meal out. Every 'I'll rest when I'm dead' morning.\n\nThe body keeps score. Make it a score worth keeping. 🔥\n\n#StrengthTraining #ConsistencyWins #FitnessResults",
+      "context": "Progress montage reel",
+      "performance": "high saves"
+    }
+  ],
+  "content_categories": ["strength training", "mindset", "nutrition", "early morning hustle", "progress"]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "Jordan Park",
+  "handle": "@jordanpark.tech",
+  "tone": "direct, informed, sceptical of hype, lightly sarcastic — always fair",
+  "target_audience": "tech-savvy consumers and early adopters aged 20-45 who value honest, unsponsored opinions",
+  "platform": "YouTube / Instagram Reels",
+  "caption_length": "short to medium (30-100 words)",
+  "hashtag_style": "2-4 specific tech hashtags, no generic motivational tags",
+  "emoji_preferences": {
+    "use_emojis": false,
+    "preferred": [],
+    "avoid": []
+  },
+  "banned_words": [
+    "game-changer", "revolutionary", "mind-blowing", "must-have",
+    "you need this", "life-changing", "best ever", "insane", "banger",
+    "fire", "slaps", "lowkey", "literally"
+  ],
+  "best_past_content": [
+    {
+      "caption": "Tested the new MacBook Pro for 30 days as my only machine.\n\nThe good: battery is genuinely all-day. Build quality justifies some of the premium.\nThe honest: $3,499 for this config is a lot. The notch is still the notch.\n\nWatch before you buy.\n\n#MacBookPro #TechReview #AppleSilicon",
+      "context": "MacBook Pro 30-day long-term review",
+      "performance": "high views"
+    },
+    {
+      "caption": "Seven AI tools I actually use vs seven I deleted after a week.\n\nSpoiler: the expensive ones aren't always the useful ones.\n\n#AITools #ProductivityTech #TechTips",
+      "context": "AI tools comparison video",
+      "performance": "viral"
+    },
+    {
+      "caption": "Phone companies keep adding cameras. I keep wishing they'd fix the basics.\n\nBattery life. Repairability. Software support past year two.\n\nNew long-form out now — link in bio.\n\n#SmartphoneReview #TechOpinion",
+      "context": "Flagship smartphone critical review",
+      "performance": "high comments"
+    }
+  ],
+  "content_categories": ["laptop reviews", "smartphone comparisons", "software and AI tools", "value tech", "buying guides"]
+}
