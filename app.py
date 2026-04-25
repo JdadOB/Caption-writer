@@ -262,54 +262,114 @@ with tab_gen:
 
 with tab_board:
     st.markdown("### New Creator Profile")
-    st.caption("Complete the questionnaire — a JSON profile is saved to `config/clients/` automatically.")
+    st.caption("Answer every section as honestly as possible — the more specific, the better the captions.")
 
     with st.form("onboard"):
+
+        # ── Basic info ────────────────────────────────────────────────────────
         r1, r2 = st.columns(2)
         with r1:
-            ob_name   = st.text_input("Full name *",   placeholder="Alex Rivera")
-            ob_handle = st.text_input("Handle *",      placeholder="@alexrivera_fit")
+            ob_name     = st.text_input("Full name *",  placeholder="Alex Rivera")
+            ob_handle   = st.text_input("Handle *",     placeholder="@alexrivera_fit")
         with r2:
             ob_platform = st.selectbox("Platform *",
                 ["Instagram", "TikTok", "YouTube", "LinkedIn", "X / Twitter"])
+            ob_audience = st.text_input("Target audience *",
+                placeholder="25–35 yr old gym-goers who train 5× per week")
+
+        r3, r4 = st.columns(2)
+        with r3:
             ob_cap_len  = st.text_input("Caption length", value="50-150 words")
+        with r4:
+            ob_hashtags = st.text_input("Hashtag style",  value="3-5 relevant hashtags")
 
-        ob_tone     = st.text_area("Tone & voice *",
-            placeholder="Describe exactly how this creator sounds. Specific beats vague.", height=90)
-        ob_audience = st.text_input("Target audience *",
-            placeholder="25–35 yr old gym-goers who train 5× per week")
-        ob_hashtags = st.text_input("Hashtag style", value="3-5 relevant hashtags")
+        st.markdown("---")
 
-        st.markdown("**Emoji preferences**")
+        # ── 🗣️ Voice & Patterns ───────────────────────────────────────────────
+        st.markdown("#### 🗣️ Voice & Patterns")
+
+        ob_voice_samples = st.text_area(
+            "Paste 5–10 real captions or texts you've written — the more casual the better *",
+            placeholder="Just dump them here, one per line. DMs, old captions, anything real.",
+            height=180,
+        )
+        ob_punctuation = st.text_input(
+            "How do you punctuate?",
+            placeholder='e.g. lots of "..." and "!!" / all lowercase / no punctuation at all / proper grammar',
+        )
+
+        st.markdown("**Emojis**")
         ec1, ec2, ec3 = st.columns([1, 2, 2])
         with ec1:
             ob_use_emoji   = st.checkbox("Use emojis", value=True)
         with ec2:
-            ob_pref_emoji  = st.text_input("Preferred", placeholder="🔥 💪 ⚡")
+            ob_pref_emoji  = st.text_input("Which ones, and when?", placeholder="🔥 when hyped, 💪 always")
         with ec3:
-            ob_avoid_emoji = st.text_input("Avoid",     placeholder="❤️ 😊 ✨")
+            ob_avoid_emoji = st.text_input("Never use these", placeholder="❤️ 😊 ✨")
 
-        ob_banned = st.text_area("Banned words * (comma-separated)",
-            placeholder="amazing, awesome, journey, blessed, transformation", height=68)
+        ob_signature = st.text_input(
+            "What words or phrases do you use constantly without thinking?",
+            placeholder="e.g. 'real talk', 'no cap', 'let's get it', 'honestly'",
+        )
+        ob_wrong_words = st.text_area(
+            "What words sound completely wrong coming from you? *",
+            placeholder="e.g. amazing, blessed, journey, transformation — anything that makes you cringe",
+            height=80,
+        )
 
-        st.markdown("**Best past content** (add 1–3 examples)")
-        ob_examples = []
-        for i in range(1, 4):
-            with st.expander(f"Example {i}", expanded=(i == 1)):
-                ctx = st.text_input("Context",  placeholder="Heavy deadlift reel mid-set", key=f"ob_ctx_{i}")
-                cap = st.text_area( "Caption",  placeholder="Paste the best-performing caption here", height=90, key=f"ob_cap_{i}")
-                if ctx.strip() or cap.strip():
-                    ob_examples.append({"context": ctx.strip(), "caption": cap.strip()})
+        st.markdown("---")
+
+        # ── 🎭 Tone & Register ────────────────────────────────────────────────
+        st.markdown("#### 🎭 Tone & Register")
+
+        ob_tone = st.text_area(
+            "Are you naturally funny, sincere, edgy, soft, hype, sarcastic — or a mix? Describe it. *",
+            placeholder="e.g. I'm mostly hype and direct, but I go softer when I talk about struggles. Never sarcastic.",
+            height=100,
+        )
+        ob_excited = st.text_area(
+            "How do you write when you're excited?",
+            placeholder="e.g. short sentences, lots of caps, fire emojis, gets louder",
+            height=80,
+        )
+        ob_vulnerable = st.text_area(
+            "How do you write when you're being real or vulnerable?",
+            placeholder="e.g. longer, slower pace, no emojis, starts with 'honestly' or 'real talk'",
+            height=80,
+        )
+        ob_caption_style = st.radio(
+            "Do your captions tend to be…",
+            ["Short and punchy", "Longer storytelling", "Mix of both"],
+            horizontal=True,
+        )
+
+        st.markdown("---")
+
+        # ── ❌ Guardrails ─────────────────────────────────────────────────────
+        st.markdown("#### ❌ Guardrails")
+
+        ob_off_brand = st.text_area(
+            "What's something you'd never say — phrases that feel off-brand or cringe to you? *",
+            placeholder="e.g. 'You need this in your life', 'game changer', 'obsessed with this'",
+            height=80,
+        )
+        ob_redirection = st.text_area(
+            "How do you handle saying no or redirecting? What's your natural move?",
+            placeholder="e.g. I just go quiet and ignore it / I'm direct but not rude / I always explain my reasoning",
+            height=80,
+        )
 
         ob_submit = st.form_submit_button("Save Profile →", type="primary")
 
     if ob_submit:
         errors = []
-        if not ob_name.strip():     errors.append("Name is required.")
-        if not ob_handle.strip():   errors.append("Handle is required.")
-        if not ob_tone.strip():     errors.append("Tone & voice is required.")
-        if not ob_audience.strip(): errors.append("Target audience is required.")
-        if not ob_banned.strip():   errors.append("Banned words are required.")
+        if not ob_name.strip():          errors.append("Name is required.")
+        if not ob_handle.strip():        errors.append("Handle is required.")
+        if not ob_tone.strip():          errors.append("Tone description is required.")
+        if not ob_audience.strip():      errors.append("Target audience is required.")
+        if not ob_voice_samples.strip(): errors.append("Voice samples are required — paste some real captions.")
+        if not ob_wrong_words.strip():   errors.append("Words that sound wrong are required.")
+        if not ob_off_brand.strip():     errors.append("Off-brand phrases are required.")
 
         if errors:
             for e in errors:
@@ -326,11 +386,20 @@ with tab_board:
                 "hashtag_style":   ob_hashtags.strip() or "3-5 relevant hashtags",
                 "emoji_preferences": {
                     "use_emojis": ob_use_emoji,
-                    "preferred":  [e.strip() for e in ob_pref_emoji.split()  if e.strip()],
+                    "preferred":  ob_pref_emoji.strip(),
                     "avoid":      [e.strip() for e in ob_avoid_emoji.split() if e.strip()],
                 },
-                "banned_words":      [w.strip() for w in ob_banned.split(",") if w.strip()],
-                "best_past_content": ob_examples,
+                "voice_samples":      [l.strip() for l in ob_voice_samples.splitlines() if l.strip()],
+                "punctuation_style":  ob_punctuation.strip(),
+                "signature_phrases":  [p.strip() for p in ob_signature.split(",") if p.strip()],
+                "banned_words":       [w.strip() for w in ob_wrong_words.split(",") if w.strip()],
+                "tone_mix":           ob_tone.strip(),
+                "excited_writing":    ob_excited.strip(),
+                "vulnerable_writing": ob_vulnerable.strip(),
+                "caption_style_preference": ob_caption_style,
+                "off_brand_phrases":  [p.strip() for p in ob_off_brand.split(",") if p.strip()],
+                "redirection_style":  ob_redirection.strip(),
+                "best_past_content":  [],
             }
             write_profile(slug, new_profile)
             st.success(f"Saved as `{slug}.json` — select it from the sidebar to start generating.")

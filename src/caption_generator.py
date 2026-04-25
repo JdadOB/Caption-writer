@@ -33,18 +33,51 @@ CAPTION_STYLES = {
 
 
 def _build_system_prompt(profile: dict) -> str:
-    banned = ", ".join(profile.get("banned_words", [])) or "none"
+    banned      = ", ".join(profile.get("banned_words", [])) or "none"
+    off_brand   = ", ".join(profile.get("off_brand_phrases", [])) or "none"
     emoji_prefs = profile["emoji_preferences"]
-    use_emojis = emoji_prefs.get("use_emojis", True)
-    preferred_emojis = " ".join(emoji_prefs.get("preferred", []))
+    use_emojis  = emoji_prefs.get("use_emojis", True)
+
+    # emoji preferred may be a string (new profiles) or list (legacy)
+    pref_raw = emoji_prefs.get("preferred", [])
+    preferred_emojis = pref_raw if isinstance(pref_raw, str) else " ".join(pref_raw)
     avoid_emojis = " ".join(emoji_prefs.get("avoid", []))
 
+    # Voice samples block
+    voice_block = ""
+    samples = profile.get("voice_samples", [])
+    if samples:
+        lines = "\n".join(f"  • {s}" for s in samples[:10])
+        voice_block = f"\nREAL WRITING SAMPLES (study these closely)\n{'─'*42}\n{lines}\n"
+
+    # Extra voice detail
+    punctuation  = profile.get("punctuation_style", "")
+    sig_phrases  = ", ".join(profile.get("signature_phrases", [])) or ""
+    excited      = profile.get("excited_writing", "")
+    vulnerable   = profile.get("vulnerable_writing", "")
+    cap_style    = profile.get("caption_style_preference", "")
+    redirection  = profile.get("redirection_style", "")
+
+    voice_detail = ""
+    if any([punctuation, sig_phrases, excited, vulnerable, cap_style]):
+        voice_detail = "\nVOICE PATTERNS\n──────────────"
+        if punctuation:   voice_detail += f"\nPunctuation:        {punctuation}"
+        if sig_phrases:   voice_detail += f"\nSignature phrases:  {sig_phrases}"
+        if cap_style:     voice_detail += f"\nCaption style:      {cap_style}"
+        if excited:       voice_detail += f"\nWhen excited:       {excited}"
+        if vulnerable:    voice_detail += f"\nWhen vulnerable:    {vulnerable}"
+        if redirection:   voice_detail += f"\nSaying no/redirect: {redirection}"
+        voice_detail += "\n"
+
+    # Best past content
     examples_block = ""
     for ex in profile.get("best_past_content", [])[:3]:
         examples_block += (
             f"\nContext: {ex.get('context', 'N/A')}\n"
             f"Caption:\n{ex.get('caption', '')}\n"
         )
+    if examples_block:
+        examples_block = f"\nBEST-PERFORMING CONTENT\n{'─'*23}{examples_block}"
 
     return f"""You are a social media caption writer for {profile['name']} ({profile.get('handle', '')}).
 
@@ -58,17 +91,17 @@ Hashtag style:   {profile.get('hashtag_style', '3-5 relevant hashtags')}
 Use emojis:      {use_emojis}
 Preferred emojis:{preferred_emojis or ' none specified'}
 Avoid emojis:    {avoid_emojis or ' none'}
-
+{voice_detail}{voice_block}{examples_block}
 BANNED WORDS — never use any of these: {banned}
+OFF-BRAND PHRASES — never use any of these: {off_brand}
 
-EXAMPLES OF THEIR BEST-PERFORMING CONTENT
-──────────────────────────────────────────{examples_block}
 INSTRUCTIONS
 ────────────
 Analyse the provided video frames carefully. Write exactly 3 caption options.
 Each must reflect a different creative angle while staying true to this creator's
-voice, audience, and visual identity. Banned words are absolute — violating them
-is not permitted under any circumstances."""
+voice, audience, and visual identity. Study the real writing samples above and
+replicate their voice exactly — same punctuation, same energy, same rhythm.
+Banned words and off-brand phrases are absolute. Violating them is not permitted."""
 
 
 def _build_user_message(frames_b64: list[str]) -> list[dict]:
