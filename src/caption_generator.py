@@ -149,14 +149,13 @@ def _call_api(
     """Build prompts, call the Anthropic API, parse and return captions."""
     system_prompt = _build_system_prompt(profile)
     user_content  = _build_user_message(frames_b64)
-    api_client    = anthropic.Anthropic()
+    api_client    = anthropic.Anthropic(timeout=120.0)
 
     logger.info(f"Sending request to {MODEL} ...")
 
-    with api_client.messages.stream(
+    response = api_client.messages.create(
         model=MODEL,
         max_tokens=2048,
-        thinking={"type": "adaptive"},
         system=[
             {
                 "type": "text",
@@ -165,8 +164,7 @@ def _call_api(
             }
         ],
         messages=[{"role": "user", "content": user_content}],
-    ) as stream:
-        response = stream.get_final_message()
+    )
 
     log_api_response(logger, client_name, response)
 
