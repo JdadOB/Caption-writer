@@ -17,7 +17,7 @@ load_dotenv()
 
 # On Streamlit Cloud secrets live in st.secrets, not env vars
 if "ANTHROPIC_API_KEY" in st.secrets:
-    os.environ["ANTHROPIC_API_KEY"] = st.secrets["ANTHROPIC_API_KEY"]
+    os.environ["ANTHROPIC_API_KEY"] = str(st.secrets["ANTHROPIC_API_KEY"]).strip()
 
 CONFIG_DIR = "config/clients"
 

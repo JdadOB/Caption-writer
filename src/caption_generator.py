@@ -1,6 +1,7 @@
 """Core caption generation logic using the Anthropic vision API."""
 
 import json
+import os
 
 import anthropic
 from dotenv import load_dotenv
@@ -149,7 +150,8 @@ def _call_api(
     """Build prompts, call the Anthropic API, parse and return captions."""
     system_prompt = _build_system_prompt(profile)
     user_content  = _build_user_message(frames_b64)
-    api_client    = anthropic.Anthropic(timeout=120.0)
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    api_client = anthropic.Anthropic(api_key=api_key, timeout=120.0)
 
     logger.info(f"Sending request to {MODEL} ...")
 
