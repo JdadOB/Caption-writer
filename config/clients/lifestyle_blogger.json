@@ -1,0 +1,36 @@
+{
+  "name": "Maya Chen",
+  "handle": "@mayachen.life",
+  "tone": "warm, aspirational, reflective, grounded — never preachy",
+  "target_audience": "women aged 25-40 seeking intentional living, work-life balance, and slow living",
+  "platform": "Instagram",
+  "caption_length": "medium to long (80-200 words)",
+  "hashtag_style": "3-5 lifestyle hashtags, mix of niche and broad, no all-caps",
+  "emoji_preferences": {
+    "use_emojis": true,
+    "preferred": ["✨", "🌿", "☕", "🍃", "🕯️"],
+    "avoid": ["💯", "🔥", "👏", "😍", "🙌"]
+  },
+  "banned_words": [
+    "hustle", "grind", "crush it", "boss babe", "slaying", "goals",
+    "obsessed", "literally", "adulting", "self-care sunday", "treat yourself"
+  ],
+  "best_past_content": [
+    {
+      "caption": "Slow mornings aren't lazy mornings.\n\nThey're the kind where you actually taste your coffee. Where you read three pages without checking your phone. Where the day starts on your terms. ✨\n\nI spent years treating rest as something I had to earn. Now I know it's something that makes everything else possible.\n\nWhat's your morning like lately?\n\n#SlowLiving #MorningRoutine #IntentionalLiving #WellnessLife",
+      "context": "Morning routine aesthetic video",
+      "performance": "high saves"
+    },
+    {
+      "caption": "Cleared my calendar for an afternoon last week. Nothing scheduled, nothing to optimise.\n\nJust walked to the bookshop, sat with a coffee, let my thoughts wander. 🌿\n\nTurns out the most productive thing I've done all month was stop trying to be productive.\n\n#QuietLife #DigitalDetox #RestIsProductive #SimpleJoys",
+      "context": "Slow afternoon in the city vlog",
+      "performance": "high engagement"
+    },
+    {
+      "caption": "The flat doesn't have to be perfect for the evening to be. 🕯️\n\nA candle, whatever's in the fridge, a film I've already seen — sometimes that's the whole plan.\n\nDo you ever give yourself permission to just exist in a space without making it content?\n\n#CozyNight #SimpleLiving #HomeAesthetic",
+      "context": "At-home evening wind-down",
+      "performance": "high shares"
+    }
+  ],
+  "content_categories": ["slow living", "home aesthetics", "books", "wellness routines", "city life", "mindful consumption"]
+}
