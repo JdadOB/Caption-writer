@@ -5,20 +5,24 @@ VIDEO       ?=
 FRAMES      ?= 3
 CONFIG_DIR  ?= config/clients
 
-.PHONY: help install test run list clean
+.PHONY: help install app test run list clean
 
 help:
 	@echo ""
 	@echo "  Caption Writer"
 	@echo "  ─────────────────────────────────────────────────────"
+	@echo "  make app              Launch the web dashboard"
 	@echo "  make install          Set up venv and install deps"
-	@echo "  make test             Run with synthetic video (default client)"
+	@echo "  make test             Run CLI test with synthetic video"
 	@echo "  make test CLIENT=lifestyle_blogger"
-	@echo "  make run  VIDEO=clip.mp4               Run on a real video"
+	@echo "  make run  VIDEO=clip.mp4               Run CLI on a real video"
 	@echo "  make run  VIDEO=clip.mp4 CLIENT=tech_reviewer FRAMES=5"
 	@echo "  make list             List available client profiles"
 	@echo "  make clean            Remove venv and cached files"
 	@echo ""
+
+app:
+	@bash run.sh --app
 
 install:
 	python3 -m venv .venv

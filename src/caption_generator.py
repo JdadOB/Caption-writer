@@ -140,42 +140,16 @@ def _parse_captions(raw_text: str) -> list[dict]:
     return result.get("captions", [])
 
 
-def generate_captions(
+def _call_api(
+    profile: dict,
+    frames_b64: list[str],
     client_name: str,
-    video_path: str,
-    num_frames: int = 3,
-    config_dir: str = "config/clients",
+    logger,
 ) -> list[dict]:
-    """Generate exactly three caption options for a video using a named client profile.
-
-    Args:
-        client_name: Stem of the profile JSON file (e.g. 'fitness_creator').
-        video_path:  Path to the source video file.
-        num_frames:  Number of frames to extract and send for vision analysis.
-        config_dir:  Directory containing client JSON profiles.
-
-    Returns:
-        A list of 3 dicts, each with keys: 'style', 'caption', 'rationale'.
-
-    Raises:
-        FileNotFoundError: If the video or client profile cannot be found.
-        ValueError: If frame extraction or JSON parsing fails.
-    """
-    logger = setup_logger()
-    logger.info(
-        f"Starting caption generation | client='{client_name}' | video='{video_path}'"
-    )
-
-    profile = load_profile(client_name, config_dir)
-    logger.info(f"Loaded profile for '{profile['name']}' ({profile.get('handle', '')})")
-
-    frames_b64 = extract_frames(video_path, num_frames)
-    logger.info(f"Extracted {len(frames_b64)} frame(s) from '{video_path}'")
-
+    """Build prompts, call the Anthropic API, parse and return captions."""
     system_prompt = _build_system_prompt(profile)
-    user_content = _build_user_message(frames_b64)
-
-    api_client = anthropic.Anthropic()
+    user_content  = _build_user_message(frames_b64)
+    api_client    = anthropic.Anthropic()
 
     logger.info(f"Sending request to {MODEL} ...")
 
@@ -187,7 +161,6 @@ def generate_captions(
             {
                 "type": "text",
                 "text": system_prompt,
-                # Cache the stable profile prompt — saves tokens on repeat calls for the same client
                 "cache_control": {"type": "ephemeral"},
             }
         ],
@@ -216,3 +189,61 @@ def generate_captions(
 
     logger.info(f"Caption generation complete | {len(captions)} option(s) returned")
     return captions
+
+
+def generate_captions(
+    client_name: str,
+    video_path: str,
+    num_frames: int = 3,
+    config_dir: str = "config/clients",
+) -> list[dict]:
+    """Generate exactly three caption options for a video using a named client profile.
+
+    Args:
+        client_name: Stem of the profile JSON file (e.g. 'fitness_creator').
+        video_path:  Path to the source video file.
+        num_frames:  Number of frames to extract and send for vision analysis.
+        config_dir:  Directory containing client JSON profiles.
+
+    Returns:
+        A list of 3 dicts, each with keys: 'style', 'caption', 'rationale'.
+
+    Raises:
+        FileNotFoundError: If the video or client profile cannot be found.
+        ValueError: If frame extraction or JSON parsing fails.
+    """
+    logger = setup_logger()
+    logger.info(
+        f"Starting caption generation | client='{client_name}' | video='{video_path}'"
+    )
+    profile = load_profile(client_name, config_dir)
+    logger.info(f"Loaded profile for '{profile['name']}' ({profile.get('handle', '')})")
+    frames_b64 = extract_frames(video_path, num_frames)
+    logger.info(f"Extracted {len(frames_b64)} frame(s) from '{video_path}'")
+    return _call_api(profile, frames_b64, client_name, logger)
+
+
+def generate_captions_from_frames(
+    client_name: str,
+    frames_b64: list[str],
+    config_dir: str = "config/clients",
+) -> list[dict]:
+    """Generate exactly three caption options from pre-extracted base64 frames.
+
+    Used by the web dashboard where frame extraction happens before this call.
+
+    Args:
+        client_name: Stem of the profile JSON file (e.g. 'fitness_creator').
+        frames_b64:  List of base64-encoded JPEG strings.
+        config_dir:  Directory containing client JSON profiles.
+
+    Returns:
+        A list of 3 dicts, each with keys: 'style', 'caption', 'rationale'.
+    """
+    logger = setup_logger()
+    logger.info(
+        f"Starting caption generation | client='{client_name}' | frames={len(frames_b64)}"
+    )
+    profile = load_profile(client_name, config_dir)
+    logger.info(f"Loaded profile for '{profile['name']}' ({profile.get('handle', '')})")
+    return _call_api(profile, frames_b64, client_name, logger)

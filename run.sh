@@ -2,10 +2,11 @@
 # Caption Writer launcher — sets up the environment on first run, then starts the app.
 #
 # Usage:
-#   ./run.sh                                   # test with synthetic video (fitness_creator)
-#   ./run.sh --client lifestyle_blogger        # test with a different profile
+#   ./run.sh --app                             # launch the web dashboard  ← start here
+#   ./run.sh                                   # CLI test with synthetic video
+#   ./run.sh --client lifestyle_blogger        # CLI test with a different profile
 #   ./run.sh --client tech_reviewer --frames 5
-#   ./run.sh --video path/to/clip.mp4 --client fitness_creator   # real video
+#   ./run.sh --video path/to/clip.mp4 --client fitness_creator   # real video (CLI)
 #   ./run.sh --list-clients                    # show available profiles
 
 set -euo pipefail
@@ -88,18 +89,21 @@ CLIENT="fitness_creator"
 FRAMES=3
 CONFIG_DIR="config/clients"
 KEEP_VIDEO=""
+LAUNCH_APP=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --app)          LAUNCH_APP=1; shift ;;
         --video)        VIDEO="$2";      shift 2 ;;
-        --client)       CLIENT="$2";    shift 2 ;;
-        --frames)       FRAMES="$2";    shift 2 ;;
+        --client)       CLIENT="$2";     shift 2 ;;
+        --frames)       FRAMES="$2";     shift 2 ;;
         --config-dir)   CONFIG_DIR="$2"; shift 2 ;;
         --keep-video)   KEEP_VIDEO="--keep-video"; shift ;;
         *)
             error "Unknown option: $1"
             echo ""
-            echo "Usage: ./run.sh [--client PROFILE] [--video FILE] [--frames N]"
+            echo "Usage: ./run.sh [--app]"
+            echo "               [--client PROFILE] [--video FILE] [--frames N]"
             echo "               [--config-dir DIR] [--keep-video] [--list-clients]"
             exit 1
             ;;
@@ -107,10 +111,14 @@ while [[ $# -gt 0 ]]; do
 done
 
 # ── Launch ────────────────────────────────────────────────────────────────────
-if [[ -n "$VIDEO" ]]; then
+if [[ $LAUNCH_APP -eq 1 ]]; then
+    heading "Starting web dashboard…"
+    info "Opening at http://localhost:8501"
+    exec streamlit run app.py
+elif [[ -n "$VIDEO" ]]; then
     heading "Running caption generator on: $VIDEO"
     python3 main.py "$CLIENT" "$VIDEO" --frames "$FRAMES" --config-dir "$CONFIG_DIR"
 else
-    heading "Running test with synthetic video (client: $CLIENT)"
+    heading "Running CLI test with synthetic video (client: $CLIENT)"
     python3 test_run.py "$CLIENT" --frames "$FRAMES" --config-dir "$CONFIG_DIR" $KEEP_VIDEO
 fi
