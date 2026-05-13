@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-brand-light-bg text-brand-light-text antialiased;
+}
+
+.dark body {
+  @apply bg-brand-dark-bg text-brand-dark-text;
+}
+
+/* Shared component primitives */
+@layer components {
+  .surface {
+    @apply rounded-2xl border bg-brand-light-surface border-brand-light-border;
+  }
+  .dark .surface {
+    @apply bg-brand-dark-surface border-brand-dark-border;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-brand-light-accent text-white hover:bg-blue-600;
+  }
+  .dark .btn-primary {
+    @apply bg-brand-dark-accent hover:bg-purple-600;
+  }
+  .btn-ghost {
+    @apply btn text-brand-light-muted hover:bg-brand-light-accentSoft hover:text-brand-light-text;
+  }
+  .dark .btn-ghost {
+    @apply text-brand-dark-muted hover:bg-brand-dark-accentSoft hover:text-brand-dark-text;
+  }
+  .btn-outline {
+    @apply btn border border-brand-light-border text-brand-light-text hover:bg-brand-light-accentSoft;
+  }
+  .dark .btn-outline {
+    @apply border-brand-dark-border text-brand-dark-text hover:bg-brand-dark-accentSoft;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-brand-light-border bg-white px-3 py-2 text-sm text-brand-light-text placeholder:text-brand-light-muted focus:border-brand-light-accent focus:outline-none focus:ring-2 focus:ring-brand-light-accent/30;
+  }
+  .dark .input {
+    @apply border-brand-dark-border bg-brand-dark-surface text-brand-dark-text placeholder:text-brand-dark-muted focus:border-brand-dark-accent focus:ring-brand-dark-accent/30;
+  }
+
+  .label {
+    @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-brand-light-muted;
+  }
+  .dark .label {
+    @apply text-brand-dark-muted;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .chip-blue {
+    @apply chip bg-brand-light-accentSoft text-brand-light-accent;
+  }
+  .dark .chip-blue {
+    @apply bg-brand-dark-accentSoft text-brand-dark-accent;
+  }
+  .chip-gray {
+    @apply chip bg-slate-100 text-slate-600;
+  }
+  .dark .chip-gray {
+    @apply bg-slate-800 text-slate-300;
+  }
+  .chip-green {
+    @apply chip bg-emerald-100 text-emerald-700;
+  }
+  .dark .chip-green {
+    @apply bg-emerald-900/40 text-emerald-300;
+  }
+  .chip-amber {
+    @apply chip bg-amber-100 text-amber-700;
+  }
+  .dark .chip-amber {
+    @apply bg-amber-900/40 text-amber-300;
+  }
+}
