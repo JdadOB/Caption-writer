@@ -1,0 +1,164 @@
+// Caption Writer — Creator Dashboard schema
+// Default datasource is SQLite for easy local dev. Swap to PostgreSQL by
+// changing `provider` and switching the role/status fields to native enums.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  passwordHash  String
+  role          String   // "ADMIN" | "MANAGER" | "CREATOR"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  managerAssignments Assignment[] @relation("ManagerAssignments")
+  creatorAssignments Assignment[] @relation("CreatorAssignments")
+
+  postsAuthored   Post[]            @relation("PostAuthor")
+  postAssignees   PostAssignee[]
+  comments        Comment[]
+  seenPosts       PostSeen[]
+  notifications   Notification[]
+  statusChanges   PostStatusEvent[]
+  activityLogs    ActivityLog[]
+
+  @@index([role])
+}
+
+model Assignment {
+  id         String   @id @default(cuid())
+  managerId  String
+  creatorId  String
+  createdAt  DateTime @default(now())
+
+  manager    User @relation("ManagerAssignments", fields: [managerId], references: [id], onDelete: Cascade)
+  creator    User @relation("CreatorAssignments", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@unique([managerId, creatorId])
+  @@index([managerId])
+  @@index([creatorId])
+}
+
+model Post {
+  id            String     @id @default(cuid())
+  authorId      String
+  title         String
+  description   String?
+  url           String
+  platform      String     // "INSTAGRAM" | "TIKTOK" | "OTHER"
+  thumbnailUrl  String?
+  embedHtml     String?
+  status        String     @default("POSTED") // "POSTED" | "IN_PROGRESS" | "COMPLETE"
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  inProgressAt  DateTime?
+  completedAt   DateTime?
+
+  author        User              @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  assignees     PostAssignee[]
+  comments      Comment[]
+  seenBy        PostSeen[]
+  statusEvents  PostStatusEvent[]
+
+  @@index([authorId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model PostAssignee {
+  id        String   @id @default(cuid())
+  postId    String
+  creatorId String
+  createdAt DateTime @default(now())
+
+  post    Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  creator User @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, creatorId])
+  @@index([creatorId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  authorId  String
+  parentId  String?
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post    Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author  User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[] @relation("CommentReplies")
+
+  @@index([postId])
+  @@index([authorId])
+  @@index([parentId])
+}
+
+model PostSeen {
+  id       String   @id @default(cuid())
+  postId   String
+  userId   String
+  seenAt   DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([userId])
+}
+
+model PostStatusEvent {
+  id         String   @id @default(cuid())
+  postId     String
+  userId     String
+  fromStatus String
+  toStatus   String
+  createdAt  DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String    // "NEW_POST" | "NEW_COMMENT" | "STATUS_CHANGED"
+  message   String
+  postId    String?
+  commentId String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([createdAt])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  actorId   String
+  action    String
+  target    String?
+  metadata  String?
+  createdAt DateTime @default(now())
+
+  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+}
